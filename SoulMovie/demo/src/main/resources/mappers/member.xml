@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Member">
+
+	<select id="selectList" parameterType="map" resultType="com.soulmovie.vo.MemberVO">
+		SELECT * FROM
+			(SELECT 
+				USERID, USERNAME, USERNICK, USEREMAIL, JOINDATE, 
+				ROW_NUMBER() OVER (ORDER BY USERID DESC) ROWN 
+			FROM 
+				MEMBER
+			WHERE
+				USERNAME LIKE '%' || #{text} || '%')
+		WHERE ROWN BETWEEN #{start} AND #{end}
+		
+	</select>
+	
+	<select id="count" parameterType="String" resultType="int">
+		SELECT COUNT(*) FROM MEMBER
+		WHERE USERNAME LIKE '%' || #{text} || '%' 
+	</select>
+	
+	<select id="selectMemberOne" parameterType="int" resultType="com.soulmovie.vo.MemberVO">
+		SELECT * FROM MEMBER WHERE USERID=#{no}
+	</select>
+	
+	<select id="findId" parameterType="String" resultType="int">
+		SELECT * FROM MEMBER WHERE USERNAME=#{username}
+	</select>
+	
+	<update id="updateMemberOne" parameterType="com.soulmovie.vo.MemberVO">
+		UPDATE MEMBER SET USERNAME=#{username}, USERRNAME=#{userrname}, USERGENDER=#{usergender}, USERNICK=#{usernick}, USERAGE=#{userage}, USEREMAIL=#{useremail}  
+		WHERE USERID = #{userid} 
+	</update>
+	
+	<select id="membercount" resultType="int">
+		SELECT COUNT(*) FROM MEMBER 
+	</select>
+</mapper>
